@@ -304,14 +304,20 @@ class GF_Approvals extends GFFeedAddOn {
 				// Integration with the Zapier Add-On
 				if ( class_exists( 'GFZapier' ) ) {
 					GFZapier::send_form_data_to_zapier( $entry, $form );
-				}
+        }
+       
 				do_action( 'gform_approvals_entry_approved', $entry, $form );
 			}
 
 			$notifications_to_send = GFCommon::get_notifications_to_send( 'form_approval', $form, $entry );
 			foreach ( $notifications_to_send as $notification ) {
 				GFCommon::send_notification( $notification, $form, $entry );
-			}
+      }
+      
+      $rejection_to_send = GFCommon::get_notifications_to_send( 'form_rejected', $form, $entry );
+      foreach ( $rejection_to_send as $not) {
+				GFCommon::send_notification( $not, $form, $entry );
+      }
 		}
 		$status = __( 'Pending Approval', 'gravityformsapprovals' );
 		$approve_icon = '<i class="fa fa-check" style="color:green"></i>';
@@ -446,7 +452,8 @@ class GF_Approvals extends GFFeedAddOn {
 	}
 
 	function add_notification_event( $events ) {
-		$events['form_approval'] = __( 'Form is approved or rejected', 'gravityformsapprovals' );
+		$events['form_approval'] = __( 'Form is approved', 'gravityformsapprovals' );
+		$events['form_rejected'] = __( 'Form is rejected', 'gravityformsapprovals' );
 		return $events;
 	}
 
